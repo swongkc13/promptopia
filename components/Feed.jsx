@@ -6,7 +6,7 @@ import PromptCard from "./PromptCard";
 
 const PromptCardList = ({ data, handleTagClick }) => {
   return (
-    <div className="mt-16 prompt_layout">
+    <div className='mt-16 prompt_layout'>
       {data.map((post) => (
         <PromptCard
           key={post._id}
@@ -21,9 +21,10 @@ const PromptCardList = ({ data, handleTagClick }) => {
 const Feed = () => {
   const [allPosts, setAllPosts] = useState([]);
 
+  // Search states
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setSearchTimeout] = useState(null);
-  const [searchedResults, setSearchResults] = useState([]);
+  const [searchedResults, setSearchedResults] = useState([]);
 
   const fetchPosts = async () => {
     const response = await fetch("/api/prompt");
@@ -36,8 +37,8 @@ const Feed = () => {
     fetchPosts();
   }, []);
 
-  const filterPrompts = (searchText) => {
-    const regex = new RegExp(searchText, "i");
+  const filterPrompts = (searchtext) => {
+    const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
     return allPosts.filter(
       (item) =>
         regex.test(item.creator.username) ||
@@ -63,22 +64,23 @@ const Feed = () => {
     setSearchText(tagName);
 
     const searchResult = filterPrompts(tagName);
-    setSearchResults(searchResult);
+    setSearchedResults(searchResult);
   };
 
   return (
-    <section className="feed">
-      <form className="relative w-full flex-center">
+    <section className='feed'>
+      <form className='relative w-full flex-center'>
         <input
-          type="text"
-          placeholder="Search for a tag or a username"
+          type='text'
+          placeholder='Search for a tag or a username'
           value={searchText}
           onChange={handleSearchChange}
           required
-          className="search_input peer"
+          className='search_input peer'
         />
       </form>
 
+      
       {searchText ? (
         <PromptCardList
           data={searchedResults}
