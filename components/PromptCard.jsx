@@ -12,18 +12,27 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
 
   const [copied, setCopied] = useState("");
 
+  // Check if post and post.creator are defined
+  const creator = post?.creator;
+  const prompt = post?.prompt;
+  const tag = post?.tag;
+
   const handleProfileClick = () => {
-    console.log(post);
+    if (creator) {
+      console.log(post);
 
-    if (post.creator._id === session?.user.id) return router.push("/profile");
+      if (creator._id === session?.user.id) return router.push("/profile");
 
-    router.push(`./profile/${post.creator._id}?name=${post.creator.username}`);
+      router.push(`./profile/${creator._id}?name=${creator.username}`);
+    }
   };
 
   const handleCopy = () => {
-    setCopied(post.prompt);
-    navigator.clipboard.writeText(post.prompt);
-    setTimeout(() => setCopied(""), 3000);
+    if (prompt) {
+      setCopied(prompt);
+      navigator.clipboard.writeText(prompt);
+      setTimeout(() => setCopied(""), 3000);
+    }
   };
 
   return (
@@ -33,20 +42,24 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
           className="flex-1 flex justify-start items-center gap-3 cursor-pointer"
           onClick={handleProfileClick}
         >
-          <Image
-            src={post.creator.image}
-            alt="user_image"
-            width={40}
-            height={40}
-            className="rounded-full object-contain"
-          />
+          {creator?.image ? (
+            <Image
+              src={creator.image}
+              alt="user_image"
+              width={40}
+              height={40}
+              className="rounded-full object-contain"
+            />
+          ) : (
+            <div className="rounded-full bg-gray-200 w-10 h-10" /> // Fallback placeholder
+          )}
 
           <div className="flex flex-col">
             <h3 className="font-satoshi font-semibold text-gray-900">
-              {post.creator.username}
+              {creator?.username || 'Unknown User'}
             </h3>
             <p className="font-inter text-sm text-gray-500">
-              {post.creator.email}
+              {creator?.email || 'No Email Provided'}
             </p>
           </div>
         </div>
@@ -54,7 +67,7 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
         <div className="copy_btn" onClick={handleCopy}>
           <Image
             src={
-              copied === post.prompt
+              copied === prompt
                 ? "/assets/icons/tick.svg"
                 : "/assets/icons/copy.svg"
             }
@@ -63,15 +76,15 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
           />
         </div>
       </div>
-      <p className="my-4 font-satoshi text-sm text-gray-700">{post.prompt}</p>
+      <p className="my-4 font-satoshi text-sm text-gray-700">{prompt || 'No Prompt Provided'}</p>
       <p
         className="font-inter text-sm blue_gradient cursor-pointer"
-        onClick={() => handleTagClick && handleTagClick(post.tag)}
+        onClick={() => handleTagClick && handleTagClick(tag)}
       >
-        #{post.tag}
+        #{tag || 'No Tag'}
       </p>
 
-      {session?.user.id === post.creator._id && pathName === "/profile" && (
+      {session?.user.id === creator?._id && pathName === "/profile" && (
         <div className="mt-5 flex-center gap-4 border-t border-gray-100 pt-3">
           <p
             className="font-inter text-sm green_gradient cursor-pointer"
