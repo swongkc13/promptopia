@@ -1,11 +1,13 @@
-// page.jsx
-import { Suspense } from "react";
-import UpdatePrompt from "./UpdatePrompt"; // Import the refactored component
+import dynamic from "next/dynamic";
+
+const UpdatePrompt = dynamic(() => import("./UpdatePrompt"), {
+  ssr: false, // This disables server-side rendering for this page
+});
 
 const UpdatePromptPage = () => (
-  <Suspense fallback={<div>Loading...</div>}>
+  <div>
     <UpdatePrompt />
-  </Suspense>
+  </div>
 );
 
 export default UpdatePromptPage;
